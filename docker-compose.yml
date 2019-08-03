@@ -1,0 +1,42 @@
+transpiler:
+  build: .
+  volumes_from:
+    - data
+  # typescript should watch the src directory
+  command: tsc -w --outDir dist/
+
+# server:
+#   build: .
+#   volumes_from:
+#     - data
+#   # nodemon should watch the dist directory
+#   command: sh -c "touch dist/index.js && nodemon dist/index.js -d 300ms -w dist"
+#   environment:
+#     NODE_ENV: 'development'
+
+run:
+  build: .
+  volumes_from:
+    - data
+  # nodemon should watch the dist directory
+  command: sh -c "touch dist/index.js && nodemon dist/index.js 'infile' -d 300ms -w dist"
+  environment:
+    NODE_ENV: 'development'
+
+# mocha:
+#   build: .
+#   volumes_from:
+#     - data
+#   # nodemon should watch the dist directory
+#   command: nodemon --watch dist -e js --delay 500ms --exec 'mocha --recursive --bail --colors --timeout 8000' ./dist/
+#   tty: true
+#   environment:
+#     NODE_ENV: 'test'
+
+data:
+  build: .
+  volumes:
+    - .:/app            # share your code with the containers
+    - /app/dist         # container has its own dist directory
+    - /app/node_modules # container has its own node_modules directory
+  command: 'true'
